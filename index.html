@@ -17,9 +17,6 @@
   </head>
 
   <body class="text-center">
-    <script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCN-edjm1ieutJkDSsaUGyE5MdqYRnsmDE&callback=initMap">
-    </script>
   <div id="map" style="width: 500px; height: 400px;"></div>
 
  <script type="text/javascript">
@@ -51,7 +48,7 @@ function initMap2() {
 
       google.maps.event.addListener(marker, 'click', (function(marker, i) {
         return function() {
-          infowindow.setContent(locations[i][0]);
+          infowindow.setContent("group");
           infowindow.open(map, marker);
         }
       })(marker, i));
@@ -68,7 +65,8 @@ function initMap2() {
        <div class="container">
 	       <div class="row">
                   <div class="col-6">
-			  <h1>AWS Welcome to PeerJoin</h1>
+			  <h1>Welcome to PeerJoin</h1>
+			  <p>Find local self-help groups</p>
 	          </div>
 	       </div>
 
@@ -161,64 +159,7 @@ function initMap2() {
                <div class="col-12">
                   <p id="message" ></p>
                </div>
-               <div class="row" style="margin-bottom: 10px">
- 
-                     <div class="col-2">
- 
-                     </div>
-                     <div class="col-7">
-                          <input type="text" class="form-control" placeholder="min long"
-                          id="minlong" aria-label="minlong"
-                          aria-describedby="minlong">
-                     </div>
-                      <div class="col-3">
-                      </div>
-                </div>
 
-               <div class="row" style="margin-bottom: 10px">
- 
-                     <div class="col-2">
-                        <button id="getgroups"  class="btn btn-outline-primary"
-                           type="button" onclick="getgroup()">  Get Group </button>
-
-                     </div>
-                     <div class="col-7">
-                          <input type="text" class="form-control" placeholder="max long"
-                          id="maxlong" aria-label="maxlong"
-                          aria-describedby="maxlong">
-                     </div>
-                      <div class="col-3">
-                      </div>
-                </div>
-
-               <div class="row" style="margin-bottom: 10px">
-
-                     <div class="col-2">
-
-                     </div>
-                     <div class="col-7">
-                          <input type="text" class="form-control" placeholder="min lat"
-                          id="minlat" aria-label="minlat"
-                          aria-describedby="min lat">
-                     </div>
-                      <div class="col-3">
-                      </div>
-                </div>
-
-
-               <div class="row" style="margin-bottom: 10px">
-
-                     <div class="col-2">
-
-                     </div>
-                     <div class="col-7">
-                          <input type="text" class="form-control" placeholder="max lat"
-                          id="maxlat" aria-label="max lat"
-                          aria-describedby="max lat">
-                     </div>
-                      <div class="col-3">
-                      </div>
-                </div>
 
 
 
@@ -265,19 +206,63 @@ function showPosition(position) {
   // The marker, positioned at Uluru
   var marker = new google.maps.Marker({position: uluru, map: map});
 
+
+    minlongitude  = Number(position.coords.longitude)-0.1;
+    maxlongitude  = Number(position.coords.longitude)+0.1;
+    minlatitude  = Number(position.coords.latitude)-1;
+    maxlatitude  = Number(position.coords.latitude)+1;
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("POST",  "https://peerjoin.online:8080/api/getgroup", true);
+    xhttp.setRequestHeader("Content-Type", "application/json; charset=utf-8");
+    xhttp.send(JSON.stringify({ "minlongitude": minlongitude, "maxlongitude": maxlongitude, "minlatitude": minlatitude, "maxlatitude" : maxlatitude }));
+    xhttp.onreadystatechange = function(){
+      if (this.readyState == 4 && this.status == 200) {
+        var data = JSON.parse(this.response);
+             var text="";
+        if (data.message === "Correct") {
+               for (i = 0, len = data.doc.length; i < len; i++) {
+                  text += data.doc[i].Longitude + " " +  data.doc[i].Latitude + "<br>";
+               }
+
+
+ var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < data.doc.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(data.doc[i].Latitude, data.doc[i].Longitude),
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent("group");
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+
+
+
+
+
+
+              document.getElementById("message").innerHTML=text;
+        } else {
+              document.getElementById("message").innerHTML="data not read";
+        }
+      }
+    };
 }
+
 </script>
 
+   <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCN-edjm1ieutJkDSsaUGyE5MdqYRnsmDE&callback=initMap">
+    </script>
 
-	       <div class="row">
-		  <div class="col-12"><img src="map.png" class="img-fluid" alt="map">
-		  </div>
-		 </div>
-		 <div class="row">
-	          <div class="col-12">
-                    <img src="realchat.png" class="img-fluid" alt="Chat"> 
-                  </div>
-               </div>
+
         </div>
       </div>
 

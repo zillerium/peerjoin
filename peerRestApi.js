@@ -1,6 +1,8 @@
 // Dependencies
 const fs = require('fs');
 const http = require('http');
+const https = require('https');
+
 const express = require('express');
 
 const app = express();
@@ -18,6 +20,15 @@ var path = require('path');
 
 mongoose.connect('mongodb://127.0.0.1:27017/mydb');
 
+const privateKey = fs.readFileSync('privkey1.pem', 'utf8');
+const certificate = fs.readFileSync('fullchain1.pem', 'utf8');
+const ca = fs.readFileSync('csr.pem', 'utf8');
+
+
+const credentials= {
+  key: privateKey,
+	cert: certificate
+}
 
 var groupSchema = new mongoose.Schema({
   AdminName : { type: String, default: null },
@@ -116,8 +127,8 @@ app.post("/api/addgroup", function(req, res) {
 
 
 // Starting both http & https servers
-const httpServer = http.createServer(app);
+const httpsServer = https.createServer(credentials, app);
 
-httpServer.listen(3000, () => {
-    console.log('HTTP Server running on port 3000');
+httpsServer.listen(8080, () => {
+    console.log('HTTP Server running on port 8080');
 });
