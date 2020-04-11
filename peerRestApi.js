@@ -55,6 +55,33 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 // add token acceptance here.
 // get token from blockchain and check against sending token from rest api call
+//
+//
+//
+app.post("/api/getgroup", function(req, res) {
+    var minlongitude = req.body.minlongitude;
+    var maxlongitude = req.body.maxlongitude;
+    var minlatitude = req.body.minlatitude;
+    var maxlatitude = req.body.maxlatitude;
+console.log(minlongitude);
+console.log(maxlongitude);
+console.log(minlatitude);
+console.log(maxlatitude);
+groupDB.
+  find({
+    Longitude: { $gt: minlongitude, $lt: maxlongitude },
+    Latitude: { $gt: minlatitude, $lt: maxlatitude }
+  }, function (err, doc) {
+	  if (err) {
+		  res.json({"message": "error", "doc": null}) 
+	  } else {
+		  res.json({ "message": "Correct", "doc": doc})
+	  }
+  });
+
+
+});
+
 app.post("/api/addgroup", function(req, res) {
     var adminname = req.body.adminname;
     var groupname = req.body.groupname;

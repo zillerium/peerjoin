@@ -6,25 +6,69 @@
     <meta name="description" content="">
     <meta name="author" content="">
        <script id="testscript" src="./peerjoin.js" type="text/javascript"></script>
-
     <link rel="icon" href="/docs/4.0/assets/img/favicons/favicon.ico">
-
     <title>PeerJoin - Neighbourhood Based Community Self-Help Groups</title>
 
     <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/sign-in/">
 
     <!-- Bootstrap core CSS -->
     <link href="bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
   </head>
 
   <body class="text-center">
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCN-edjm1ieutJkDSsaUGyE5MdqYRnsmDE&callback=initMap">
+    </script>
+  <div id="map" style="width: 500px; height: 400px;"></div>
+
+ <script type="text/javascript">
+    var locations = [
+      ['Bondi Beach', -33.890542, 151.274856, 4],
+      ['Coogee Beach', -33.923036, 151.259052, 5],
+      ['Cronulla Beach', -34.028249, 151.157507, 3],
+      ['Manly Beach', -33.80010128657071, 151.28747820854187, 2],
+      ['Maroubra Beach', -33.950198, 151.259302, 1]
+    ];
+
+function initMap2() {
+  // The location of Uluru
+  // The marker, positioned at Uluru
+	    var map = new google.maps.Map(document.getElementById('map'), {
+      zoom: 10,
+      center: new google.maps.LatLng(-33.92, 151.25),
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+    });
+ var infowindow = new google.maps.InfoWindow();
+
+    var marker, i;
+
+    for (i = 0; i < locations.length; i++) {  
+      marker = new google.maps.Marker({
+        position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+        map: map
+      });
+
+      google.maps.event.addListener(marker, 'click', (function(marker, i) {
+        return function() {
+          infowindow.setContent(locations[i][0]);
+          infowindow.open(map, marker);
+        }
+      })(marker, i));
+    }
+
+
+}
+
+
+  </script>
+ 
+
 
        <div class="container">
 	       <div class="row">
                   <div class="col-6">
-			  <h1>Welcome to PeerJoin</h1>
+			  <h1>AWS Welcome to PeerJoin</h1>
 	          </div>
 	       </div>
 
@@ -117,6 +161,113 @@
                <div class="col-12">
                   <p id="message" ></p>
                </div>
+               <div class="row" style="margin-bottom: 10px">
+ 
+                     <div class="col-2">
+ 
+                     </div>
+                     <div class="col-7">
+                          <input type="text" class="form-control" placeholder="min long"
+                          id="minlong" aria-label="minlong"
+                          aria-describedby="minlong">
+                     </div>
+                      <div class="col-3">
+                      </div>
+                </div>
+
+               <div class="row" style="margin-bottom: 10px">
+ 
+                     <div class="col-2">
+                        <button id="getgroups"  class="btn btn-outline-primary"
+                           type="button" onclick="getgroup()">  Get Group </button>
+
+                     </div>
+                     <div class="col-7">
+                          <input type="text" class="form-control" placeholder="max long"
+                          id="maxlong" aria-label="maxlong"
+                          aria-describedby="maxlong">
+                     </div>
+                      <div class="col-3">
+                      </div>
+                </div>
+
+               <div class="row" style="margin-bottom: 10px">
+
+                     <div class="col-2">
+
+                     </div>
+                     <div class="col-7">
+                          <input type="text" class="form-control" placeholder="min lat"
+                          id="minlat" aria-label="minlat"
+                          aria-describedby="min lat">
+                     </div>
+                      <div class="col-3">
+                      </div>
+                </div>
+
+
+               <div class="row" style="margin-bottom: 10px">
+
+                     <div class="col-2">
+
+                     </div>
+                     <div class="col-7">
+                          <input type="text" class="form-control" placeholder="max lat"
+                          id="maxlat" aria-label="max lat"
+                          aria-describedby="max lat">
+                     </div>
+                      <div class="col-3">
+                      </div>
+                </div>
+
+
+
+
+<p>Click the
+
+button to get your coordinates.</p>
+
+<button onclick="getLocation()">Try It</button>
+
+<p id="demo"></p>
+
+<script>
+var x = document.getElementById("demo");
+
+function initMap() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+
+
+function getLocation() {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition);
+  } else { 
+    x.innerHTML = "Geolocation is not supported by this browser.";
+  }
+}
+
+function showPosition(position) {
+  x.innerHTML = "Latitude: " + position.coords.latitude + 
+  "<br>Longitude: " + position.coords.longitude;
+
+  // The location of Uluru
+  var uluru = {lat: position.coords.latitude, lng: position.coords.longitude};
+  // The map, centered at Uluru
+  var map = new google.maps.Map(
+ //:w
+	document.getElementById('map'), {zoom:15 , center: uluru});
+  // The marker, positioned at Uluru
+  var marker = new google.maps.Marker({position: uluru, map: map});
+
+}
+</script>
+
 
 	       <div class="row">
 		  <div class="col-12"><img src="map.png" class="img-fluid" alt="map">
